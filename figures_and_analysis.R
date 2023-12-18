@@ -292,3 +292,4 @@ plot(ecdf(l1)(l1), ecdf(deg)(deg), pch=20, xlab = TeX("$L_1$ centrality (uniform
 plot(ecdf(l1)(l1), ecdf(bet)(bet), pch=20, xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Betweeness centrality (uniform margin)")
 plot(ecdf(l1)(l1), ecdf(clo)(clo), pch=20, xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Closeness centrality (uniform margin)")
 cor(l1, deg); cor(l1, bet); cor(l1, clo)
+cor(l1, deg, method="spearman"); cor(l1, bet, method="spearman"); cor(l1, clo, method="spearman")
