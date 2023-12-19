@@ -159,7 +159,7 @@ sapply(paste0("J",1:6), \(n) V(rok.reduce)$nbill[V(rok.reduce)$name==n])
 (1/(as_adjacency_matrix(rok.reduce, attr="weight"))) |> as.vector() -> cospon.dist
 cospon.dist[cospon.dist == Inf] <- NA
 summary(cospon.dist)
-quantile(cospon.dist, 0.99, na.rm=TRUE)
+ecdf(cospon.dist)(416)
 
 # cosponsored bills of each Justice Party member with the other memeber in the
 # reduced assembly network: top 6.
