@@ -123,6 +123,7 @@ rok.global <- L1cent(rok.reduce)
 rok.local <- L1centLOC(rok.reduce, alpha = 15/279)
 
 opar <- par(oma=c(0,0,0,9.5),mar=c(5,4,4,1)+0.1,mfrow=c(1,2))
+set.seed(0)
 params.rok.full <- L1centMDS(rokassembly21)
 plot(params.rok.full, plot.bg=color.party[V(rokassembly21)$party],
      plot.pch=sapply(V(rokassembly21)$full,\(f)ifelse(f,21,4)),
