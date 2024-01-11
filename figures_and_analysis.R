@@ -84,15 +84,18 @@ mculabel32[!mculabel32 %in% c("Avengers: Infinity War")] <- NA
 par(mfrow=c(1,3))
 set.seed(0)
 plot(g8,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
-     vertex.label.color="black",vertex.size=7,
+     vertex.label.color="black",
+     vertex.size=sapply(V(g8)$name,\(n)ifelse(n %in% c("Avengers: Infinity War", "Avengers: Endgame"), 15, 7)),
      vertex.label.family = "sans",edge.arrow.size=0.5,
      main=TeX("(a) $\\alpha$=8/32",bold=TRUE),vertex.label=mculabel8)
 plot(g16,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
-     vertex.label.color="black",vertex.size=7,
+     vertex.label.color="black",
+     vertex.size=sapply(V(g16)$name,\(n)ifelse(n %in% c("Avengers: Infinity War", "Avengers: Endgame"), 15, 7)),
      vertex.label.family = "sans",edge.arrow.size=0.5,
      main=TeX("(b) $\\alpha$=16/32",bold=TRUE),vertex.label=mculabel16)
 plot(g32,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
-     vertex.label.color="black",vertex.size=7,
+     vertex.label.color="black",
+     vertex.size=sapply(V(g32)$name,\(n)ifelse(n %in% c("Avengers: Infinity War"), 15, 7)),
      vertex.label.family = "sans",edge.arrow.size=0.5,
      main=TeX("(c) $\\alpha$=32/32",bold=TRUE),vertex.label=mculabel32)
 
