@@ -8,10 +8,10 @@ library(ggrepel)
 ## MCU movie network ###########################################################
 ################################################################################
 
-## Fig 1: L1 centrality of MCU movie network
+## Fig: L1 centrality of MCU movie network
 ## save as 4 x 12 plot
 df <- data.frame(y=rep(0,32),x=L1cent(MCUmovie, eta = V(MCUmovie)$worldwidegross))
-rownames(df) <- V(MCUmovie)$name
+rownames(df) <- V(MCUmovie)$name # data.frame of L1 centrality values (column `x`)
 ggplot(df, aes(x, y, label=rownames(df))) +
   geom_point(size=2) +
   geom_text_repel(nudge_y = 0.2,  direction = 'x', angle = 45,
@@ -29,7 +29,7 @@ ggplot(df, aes(x, y, label=rownames(df))) +
         plot.margin = unit(c(1,2,1,2), "cm"))
 
 
-## Fig 2: MCU movie network's Fruchterman-Reingold plot, Target plot
+## Fig: MCU movie network's Fruchterman-Reingold plot, Target plot
 ## save as 6 x 12 plot
 set.seed(0)
 params <- L1centMDS(MCUmovie)
@@ -42,14 +42,13 @@ plot(params, main="(b) Target plot", plot.col="black",
      plot.cex=1.5, plot.pch=21, plot.bg=c(rep("gray",18),"black",rep("gray",13)))
 
 
-## Fig 3 is not drawn with R.
-
-
-## Fig 4: L1 centrality of MCU movie network symmetrized w.r.t. `Spider-Man: No
+## Fig: L1 centrality of MCU movie network symmetrized w.r.t. `Spider-Man: No
 ## Way Home`
 ## save as 4 x 12 plot
-df <- data.frame(y=rep(0,32),x=L1centNB(MCUmovie, eta = V(MCUmovie)$worldwidegross)$`Spider-Man: No Way Home`)
+df <- data.frame(y=rep(0,32),
+                 x=L1centNB(MCUmovie, eta = V(MCUmovie)$worldwidegross)$`Spider-Man: No Way Home`)
 rownames(df) <- V(MCUmovie)$name
+# data.frame of L1 centrality values in the symmetrized graph (column `x`)
 ggplot(df, aes(x, y, label=rownames(df))) +
   geom_point(size=2) +
   geom_text_repel(nudge_y = 0.2,  direction = 'x', angle = 45,
@@ -67,7 +66,7 @@ ggplot(df, aes(x, y, label=rownames(df))) +
         plot.margin = unit(c(1,2,1,2), "cm"))
 
 
-## Fig 5: multiscale edge representation of MCU movie network
+## Fig: multiscale edge representation of MCU movie network
 ## save as 4 x 12 plot
 MCU.edge <- L1centEDGE(MCUmovie, eta = V(MCUmovie)$worldwidegross, alpha = (2:32)/32)
 MCU.edge[[7]] |> graph_from_edgelist(directed=TRUE) -> g8
@@ -100,7 +99,7 @@ plot(g32,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
      main=TeX("(c) $\\alpha$=32/32",bold=TRUE),vertex.label=mculabel32)
 
 
-## Fig 6: Lorenz curve of MCU movie network
+## Fig: Lorenz curve of MCU movie network
 ## save as 8 x 8 plot
 par(mfrow=c(1,1))
 L1cent(MCUmovie) |> Lorenz_plot(asp=1, main="Lorenz plot of MCU movie network") -> gini1
@@ -108,7 +107,29 @@ L1cent(MCUmovie, eta = V(MCUmovie)$worldwidegross) |> Lorenz_plot(add=TRUE, lty=
 L1cent(MCUmovie, eta = 1/V(MCUmovie)$worldwidegross) |> Lorenz_plot(add=TRUE, lty=4) -> gini3
 legend("topleft", lty=c(0,1,2,4), legend=c(as.expression(bquote(bold("Multiplicity"))),
                                            "Equal","Worldwide gross","1/(Worldwide gross)"),bty="n")
-c(gini1, gini2, gini3) |> round(4)
+c(gini1, gini2, gini3) |> round(4) # heterogeneity indices for three graphs
+
+
+## Fig: Comparing L1 centrality to other measures
+l1 <- L1cent(MCUmovie)
+MCUmovie.no.wt <- MCUmovie
+E(MCUmovie.no.wt)$weight <- rep(1,278)
+l1.no.wt <- L1cent(MCUmovie.no.wt)
+deg <- degree(MCUmovie)
+bet <- betweenness(MCUmovie)
+clo <- closeness(MCUmovie)
+par(mfcol=c(3,2))
+plot(l1, deg, pch=20, xlab = TeX("$L_1$ centrality"), ylab="Degree centrality")
+plot(l1, bet, pch=20, xlab = TeX("$L_1$ centrality"), ylab="Betweeness centrality")
+plot(l1, clo, pch=20, xlab = TeX("$L_1$ centrality"), ylab="Closeness centrality")
+plot(ecdf(l1)(l1), ecdf(deg)(deg), pch=20, 
+     xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Degree centrality (uniform margin)")
+plot(ecdf(l1)(l1), ecdf(bet)(bet), pch=20, 
+     xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Betweeness centrality (uniform margin)")
+plot(ecdf(l1)(l1), ecdf(clo)(clo), pch=20, 
+     xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Closeness centrality (uniform margin)")
+cor(l1, deg); cor(l1, bet); cor(l1, clo)
+cor(l1, deg, method="spearman"); cor(l1, bet, method="spearman"); cor(l1, clo, method="spearman")
 
 
 ################################################################################
@@ -117,10 +138,10 @@ c(gini1, gini2, gini3) |> round(4)
 
 color.party <- c("black","#004EA1","black","#FFED00","#E61E2B","black","black")
 data(rokassembly21)
-# D2, D181: Chairmen of the National Assembly
+# D2, D181: Two chairmen of the 21st National Assembly -> delete them from the graph
 rok.reduce <- delete_vertices(rokassembly21, c(V(rokassembly21)$name[!V(rokassembly21)$full], "D2", "D181"))
 
-## Fig 7: assembly network - Target plot + global vs. local (alpha = 15/279)
+## Fig: assembly network - Target plot + global vs. local (alpha = 15/279)
 ## save as 8 x 17 plot
 rok.global <- L1cent(rok.reduce)
 rok.local <- L1centLOC(rok.reduce, alpha = 15/279)
@@ -165,11 +186,11 @@ cospon.dist[cospon.dist == Inf] <- NA
 summary(cospon.dist)
 ecdf(cospon.dist)(416)
 
-# cosponsored bills of each Justice Party member with the other memeber in the
+# cosponsored bills of each Justice Party member with the other member in the
 # reduced assembly network: top 6.
 lapply(paste0("J",1:6),
        \(n){
-         temp <- (1/(as_adjacency_matrix(rok.reduce, attr="weight"))[n,]) #/V(rok.reduce)$nbill[V(rok.reduce)$name==n]
+         temp <- (1/(as_adjacency_matrix(rok.reduce, attr="weight"))[n,]) 
          temp[temp != Inf] |>
          sort(decreasing = TRUE) |>
          head(6)
@@ -179,7 +200,7 @@ lapply(paste0("J",1:6),
 summary(V(rok.reduce)$nbill)
 
 
-## Analysis of the P90, P57 and Fig. 8 (8 x 8 plot)
+## Analysis of the P90, P57 and a Figure (8 x 8 plot)
 # proportion of cosponsored bills between the two parties - to the cosponsored
 # bill within each party.
 edgeconnection <- data.frame(weight = 1/E(rok.reduce)$weight,
@@ -210,7 +231,7 @@ edgeconnection[
   (edgeconnection$p1 == "Democratic Party of Korea" & edgeconnection$p2 == "People Power Party") |
     (edgeconnection$p2 == "Democratic Party of Korea" & edgeconnection$p1 == "People Power Party"),] -> between.table
 between.table <- between.table[between.table$n1 != "P9" & between.table$n2 != "P9",]
-between.table[order(between.table$weight,decreasing = TRUE)[1:10],]
+between.table[order(between.table$weight,decreasing = TRUE)[1:10],] # cosponsorship between the two major parties; sorted
 
 # quantile of the `bridge` vertices
 rok.reduce.l1cent <- L1cent(rok.reduce)
@@ -225,7 +246,7 @@ V(rok.reduce)$nbill[which(ecdf(rok.reduce.l1cent)(rok.reduce.l1cent) >= 0.9)] |>
 V(rok.reduce)$nbill[which(ecdf(rok.reduce.l1cent)(rok.reduce.l1cent) >= 0.95)] |> sort()
 
 
-## Fig 9: Functional data set extracted from the reduced assembly network
+## Fig: Functional data set extracted from the reduced assembly network
 ## save as 8 x 8 plot
 rok.local.all <- L1centLOC(rok.reduce,alpha=seq(5,275,by=5)/279)
 rok.local.all.mat <- do.call(rbind,rok.local.all)
@@ -249,7 +270,7 @@ legend("topright",bty="n",lty=1,lwd=2,
        col=color.party[c(2,5,4,1)])
 
 
-## Fig 10: Multiscale edge reprsentation of the reduced assembly network
+## Fig: Multiscale edge reprsentation of the reduced assembly network
 ## save as 8 x 17 plot
 edges <- L1centEDGE(rok.reduce, alpha = c(15/279,279/279))
 edges[[1]] |> graph_from_edgelist() -> g15
@@ -275,25 +296,3 @@ g279 |> plot(layout = layout_with_fr,
              vertex.label.family = "sans",edge.arrow.size=0.5,
              vertex.label = sapply(V(g15)$name,\(n)ifelse(n %in% localmeds279, n, NA)),
              main=TeX("(b) $\\alpha = 1$", bold=TRUE))
-
-
-################################################################################
-## Appendix B ##################################################################
-################################################################################
-
-l1 <- L1cent(MCUmovie)
-MCUmovie.no.wt <- MCUmovie
-E(MCUmovie.no.wt)$weight <- rep(1,278)
-l1.no.wt <- L1cent(MCUmovie.no.wt)
-deg <- degree(MCUmovie)
-bet <- betweenness(MCUmovie)
-clo <- closeness(MCUmovie)
-par(mfcol=c(3,2))
-plot(l1, deg, pch=20, xlab = TeX("$L_1$ centrality"), ylab="Degree centrality")
-plot(l1, bet, pch=20, xlab = TeX("$L_1$ centrality"), ylab="Betweeness centrality")
-plot(l1, clo, pch=20, xlab = TeX("$L_1$ centrality"), ylab="Closeness centrality")
-plot(ecdf(l1)(l1), ecdf(deg)(deg), pch=20, xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Degree centrality (uniform margin)")
-plot(ecdf(l1)(l1), ecdf(bet)(bet), pch=20, xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Betweeness centrality (uniform margin)")
-plot(ecdf(l1)(l1), ecdf(clo)(clo), pch=20, xlab = TeX("$L_1$ centrality (uniform margin)"), ylab="Closeness centrality (uniform margin)")
-cor(l1, deg); cor(l1, bet); cor(l1, clo)
-cor(l1, deg, method="spearman"); cor(l1, bet, method="spearman"); cor(l1, clo, method="spearman")
