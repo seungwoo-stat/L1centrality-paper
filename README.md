@@ -2,7 +2,7 @@
 
 This repository contains code to reproduce figures and analysis from the paper "On a Notion of Graph Centrality Based on *L*<sub>1</sub> Data Depth" (Kang and Oh, 2024)
 
-`figures_and_analysis.R` reproduces all figures (which are related to the MCU movie network or the assembly network) and analysis procedures outlined in the paper.
+`figures_and_analysis-JASA.R` reproduces all figures (which are related to the MCU movie network or the assembly network) and analysis procedures outlined in the paper.
 
 ### Reference
 
