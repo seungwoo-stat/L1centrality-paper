@@ -156,10 +156,10 @@ cbind(
 
 ## Fig 8 (supplement): Multiscale edge representation of MCU movie network
 ## save as 4 x 12 plot
-MCU.edge <- L1centEDGE(MCUmovie, eta = V(MCUmovie)$worldwidegross, alpha = (2:32)/32)
-MCU.edge[[7]] |> graph_from_edgelist(directed=TRUE) -> g8
-MCU.edge[[15]] |> graph_from_edgelist(directed=TRUE) -> g16
-MCU.edge[[31]] |> graph_from_edgelist(directed=TRUE) -> g32
+MCU.edge <- L1centEDGE(MCUmovie, eta = V(MCUmovie)$worldwidegross, alpha = c(8.1, 16.1, 32)/32) # add 0.1 to prevent rounding errors
+MCU.edge[[1]] |> graph_from_edgelist(directed=TRUE) -> g8
+MCU.edge[[2]] |> graph_from_edgelist(directed=TRUE) -> g16
+MCU.edge[[3]] |> graph_from_edgelist(directed=TRUE) -> g32
 mculabel8 <- V(g8)$name
 mculabel8[!mculabel8 %in% c("Avengers: Endgame","Avengers: Infinity War")] <- NA
 mculabel16 <- V(g16)$name
@@ -190,12 +190,15 @@ plot(g32,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
 ## Fig 10 (supplement): Lorenz curve of MCU movie network
 ## save as 8 x 8 plot
 par(mfrow=c(1,1))
-L1cent(MCUmovie) |> Lorenz_plot(asp=1, main="Lorenz plot of MCU movie network") -> gini1
-L1cent(MCUmovie, eta = V(MCUmovie)$worldwidegross) |> Lorenz_plot(add=TRUE, lty=2) -> gini2
-L1cent(MCUmovie, eta = 1/V(MCUmovie)$worldwidegross) |> Lorenz_plot(add=TRUE, lty=4) -> gini3
+L1cent(MCUmovie) |> Lorenz_plot(asp=1, main="Lorenz plot of MCU movie network")
+L1cent(MCUmovie, eta = V(MCUmovie)$worldwidegross) |> Lorenz_plot(add=TRUE, lty=2)
+L1cent(MCUmovie, eta = 1/V(MCUmovie)$worldwidegross) |> Lorenz_plot(add=TRUE, lty=4)
 legend("topleft", lty=c(0,1,2,4), legend=c(as.expression(bquote(bold("Multiplicity"))),
                                            "Equal","Worldwide gross","1/(Worldwide gross)"),bty="n")
-c(gini1, gini2, gini3) |> round(4) # heterogeneity indices for three graphs
+c(Gini(L1cent(MCUmovie)), 
+  Gini(L1cent(MCUmovie, eta = V(MCUmovie)$worldwidegross)), 
+  Gini(L1cent(MCUmovie, eta = 1/V(MCUmovie)$worldwidegross))) |> 
+  round(4) # heterogeneity indices for three graphs
 
 
 ################################################################################
