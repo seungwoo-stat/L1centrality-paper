@@ -47,10 +47,12 @@ ggplot(df, aes(x, y, label=rownames(df))) +
 set.seed(0)
 params <- L1centMDS(MCUmovie)
 par(mfrow=c(1,2), mar = c(5, 4, 4, 2) + 0.1)
+# Fig 3(a)
 plot(MCUmovie, layout = layout_with_fr, vertex.size = c(rep(5,18),7,rep(5,13)),
      vertex.color=c(rep("gray",18),"black",rep("gray",13)),
      vertex.label.cex = 0.6, vertex.label.dist = 0, vertex.label.color="black",
      main="(a) Fruchterman-Reingold layout plot", vertex.label.family = "sans")
+# Fig 3(b)
 plot(params, main="(b) Target plot", plot.col="black",
      plot.cex=1.5, plot.pch=21, plot.bg=c(rep("gray",18),"black",rep("gray",13)))
 
@@ -86,12 +88,14 @@ mcu1 <- L1cent(MCUmovie, eta = V(MCUmovie)$worldwidegross)
 
 layout(matrix(c(1,2,3), nrow=1), width = c(2,2,1.2))
 
+# Fig 1 (supplement) - left panel
 par(mar=c(5,4,4,2) + 0.1)
 plot(NA, xlim = c(0,1), ylim = c(0,1), xaxt="n", bty = "l",
      xlab = "Multiplicity", ylab = TeX("$L_1$ centrality"))
 axis(1, c(0,1), c("Equal","Worldwide gross"), cex.axis = 1)
 for(i in 1:32) lines(c(0,1),c((mcu0)[i], (mcu1)[i]))
 
+# Fig 1 (supplement) - right panel
 par(mar=c(5,4,4,-0.1) + 0.1)
 large.change.index <- abs(rank(mcu0) - rank(mcu1)) >= 3
 plot(NA, xlim = c(0,1), ylim = c(0,1), xaxt="n", bty = "l",
@@ -170,16 +174,19 @@ mculabel32[!mculabel32 %in% c("Avengers: Infinity War")] <- NA
 
 par(mfrow=c(1,3))
 set.seed(0)
+# Fig 8(a) (supplement)
 plot(g8,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
      vertex.label.color="black",
      vertex.size=sapply(V(g8)$name,\(n)ifelse(n %in% c("Avengers: Infinity War", "Avengers: Endgame"), 15, 7)),
      vertex.label.family = "sans",edge.arrow.size=0.5,
      main=TeX("(a) $\\alpha$=8/32",bold=TRUE),vertex.label=mculabel8)
+# Fig 8(b) (supplement)
 plot(g16,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
      vertex.label.color="black",
      vertex.size=sapply(V(g16)$name,\(n)ifelse(n %in% c("Avengers: Infinity War", "Avengers: Endgame"), 15, 7)),
      vertex.label.family = "sans",edge.arrow.size=0.5,
      main=TeX("(b) $\\alpha$=16/32",bold=TRUE),vertex.label=mculabel16)
+# Fig 8(c) (supplement)
 plot(g32,vertex.color="gray",vertex.label.cex = 1,vertex.label.dist = 0,
      vertex.label.color="black",
      vertex.size=sapply(V(g32)$name,\(n)ifelse(n %in% c("Avengers: Infinity War"), 15, 7)),
@@ -218,10 +225,12 @@ rok.local <- L1centLOC(rok.reduce, alpha = 15.1/279) # 15.1 to prevent rounding 
 opar <- par(oma=c(0,0,0,9.5),mar=c(5,4,4,1)+0.1,mfrow=c(1,2))
 set.seed(0)
 params.rok.full <- L1centMDS(rokassembly21)
+# Fig 7(a)
 plot(params.rok.full, plot.bg=color.party[V(rokassembly21)$party],
      plot.pch=sapply(V(rokassembly21)$full,\(f)ifelse(f,21,4)),
      text.labels="", main="(a) Target plot of 317 members",
      plot.col=sapply(1:317,\(n)ifelse(V(rokassembly21)$full[n],"black",color.party[V(rokassembly21)$party[n]])))
+# Fig 7(b)
 outlier.index <- which(abs(ecdf(rok.global)(rok.global) - ecdf(rok.local[[1]])(rok.local[[1]])) >= 0.5)
 plot(ecdf(rok.global)(rok.global),
      ecdf(rok.local[[1]])(rok.local[[1]]),
@@ -349,6 +358,7 @@ localmeds279 <- unique(edges[[2]][,2])
 
 set.seed(0)
 par(mfrow=c(1,2))
+# Fig 9(a) (supplement)
 g15 |> plot(layout = layout_with_kk,
             vertex.color=sapply(V(g15)$name,\(n)color.party[V(rok.reduce)$party[V(rok.reduce)$name==n]]),
             vertex.label.cex = 1,vertex.label.dist = 0,
@@ -357,6 +367,7 @@ g15 |> plot(layout = layout_with_kk,
             vertex.label.family = "sans",edge.arrow.size=0.5,
             vertex.label = sapply(V(g15)$name,\(n)ifelse(n %in% localmeds15, n, NA)),
             main=TeX("(a) $\\alpha = 15/279$", bold=TRUE))
+# Fig 9(b) (supplement)
 g279 |> plot(layout = layout_with_fr,
              vertex.color=sapply(V(g15)$name,\(n)color.party[V(rok.reduce)$party[V(rok.reduce)$name==n]]),
              vertex.label.cex = 1,vertex.label.dist = 0,
@@ -390,6 +401,7 @@ do.call("cbind", L1centLOC(g3, alpha = pmin((3:10 + .1)/10,1))) -> l1g3
 op <- par(oma = c(-0.1,0,0.1,0) + 0.1, las = 1)
 nf <- layout(matrix(c(1,2,3, 4,5,6), ncol=3, byrow=FALSE))
 
+# Fig 4 - G1
 par(mar=c(0,0,0,0))
 plot(g1, vertex.color = c(colpal[1:5],colpal[5:2],colpal[6]), 
      vertex.label.color = "white", vertex.label.family = "sans",
@@ -401,6 +413,7 @@ plot(NA, xlim = c(0.3, 1), ylim = c(0,1),
 matlines((3:10)/10, t(l1g1[c(1,2,3,4,5,10),] + c(0,-(1:4)/100,0)), 
          col = colpal, lty = 1, lwd = 1.5)
 
+# Fig 4 - G2
 par(mar=c(0,0,0,0))
 plot(g2, vertex.color = c(colpal[1:5],colpal[5:2],colpal[6]), 
      vertex.label.color = "white", vertex.label.family = "sans",
@@ -412,6 +425,7 @@ plot(NA, xlim = c(0.3, 1), ylim = c(0,1),
 matlines((3:10)/10, t(l1g2[c(1,2,3,4,5,10),] + c(0,-(1:4)/100,0)), 
          col = colpal, lty = 1, lwd = 1.5)
 
+# Fig 4 - G3
 par(mar=c(0,0,0,0))
 plot(g3, vertex.color = c(colpal[1:5],colpal[5:2],colpal[6]), 
      vertex.label.color = "white", vertex.label.family = "sans",
@@ -441,36 +455,42 @@ vertex.layout2 <- cbind(1.5*cos((0:(n-2))*2*pi/(n-1))-0.5, sin((0:(n-2))*2*pi/(n
 
 par(mfrow = c(2,3))
 par(mar=c(1,1,1,1) + 0.1)
+# Fig 2(a) (supplement)
 plot(g.complete, main="(a) Complete graph", layout = vertex.layout, 
      vertex.size = 25,
      vertex.color = rgb(0,0,0,alpha = L1cent(g.complete)), 
      vertex.label = L1cent(g.complete),
      vertex.label.color = "white",
      vertex.label.family="sans")
+# Fig 2(b) (supplement)
 plot(g.cycle, main="(b) Cycle graph", layout = vertex.layout, 
      vertex.size = 25,
      vertex.color = rgb(0,0,0,alpha = L1cent(g.cycle)), 
      vertex.label = L1cent(g.cycle),
      vertex.label.color = "white",
      vertex.label.family="sans")
+# Fig 2(c) (supplement)
 plot(g.geodesic, main="(c) Path graph", layout = cbind(rep(1:n),rep(1:n)), 
      vertex.size = 25,
      vertex.color = rgb(0,0,0,alpha = L1cent(g.geodesic)), 
      vertex.label = L1cent(g.geodesic),
      vertex.label.color = c(rep("black",2),rep("white",6),rep("black",2)),
      vertex.label.family="sans")
+# Fig 2(d) (supplement)
 plot(g.star, main="(d) Star graph", 
      vertex.color = rgb(0,0,0,alpha = L1cent(g.star)), 
      vertex.size = 25,
      vertex.label = L1cent(g.star),
      vertex.label.color = c(rep("white",1),rep("black",9)),
      vertex.label.family="sans")
+# Fig 2(e) (supplement)
 plot(g.tree, main="(e) Tree graph", layout = layout_as_tree(g.tree, root=1),
      vertex.size = c(25,rep(28,2),rep(25,12)),
      vertex.color = rgb(0,0,0,alpha = L1cent(g.tree)), 
      vertex.label = c(1,"14/15","14/15",rep(0.4,4),rep("2/15",8)),#L1cent(g.tree),
      vertex.label.color = c(rep("white",3),rep("black",12)),
      vertex.label.family="sans")
+# Fig 2(f) (supplement)
 plot(g.grid, main="(f) Regular grid graph",
      vertex.size = 25,
      vertex.color = rgb(0,0,0,alpha = L1cent(g.grid)), 
@@ -487,6 +507,7 @@ g <- graph_from_edgelist(rbind(matrix(c(1,rep(2:9, each=2), 1), byrow = TRUE, nc
                                c(9,4),c(9,5),c(8,3),c(8,4),c(3,7)), directed = FALSE)
 vertex.layout <- rbind(cbind(1.5*cos((0:8)*2*pi/9)-0.5, sin((0:8)*2*pi/9)),c(2,0))
 par(mfrow = c(1,2), mar = c(0,0,4.1,0))
+# Fig 3(a) (supplement)
 plot(g, vertex.label.color = "black", 
      vertex.color = "white",
      vertex.label.family = "sans",
@@ -494,6 +515,7 @@ plot(g, vertex.label.color = "black",
      layout = vertex.layout, 
      vertex.size = 20, asp = 0.8,
      main = "(a) Graph G")
+# Fig 3(b) (supplement)
 plot(g, vertex.color = c("gray","black")[(L1centNB(g)[[5]] >= 0.475) + 1], 
      vertex.label.color = "white", 
      vertex.label.family = "sans",
@@ -547,6 +569,7 @@ ly <- layout_in_circle(g.nb.counter)
 par(mfrow = c(1,2)) 
 index <- c(5,7)
 g.mn.counter.2 <- add_edges(g.mn.counter, index)
+# Fig 4(a) (supplement)
 plot(g.mn.counter.2, layout = ly, 
      vertex.label.color = "black", 
      vertex.color = "gray",
@@ -556,6 +579,7 @@ plot(g.mn.counter.2, layout = ly,
      vertex.size = 25, vertex.label.size = 30,
      edge.lty = c(rep(1,15),2),
      main = "(a) Score and rank monotonicity")
+# Fig 4(b) (supplement)
 plot(g.nb.counter, layout = ly, 
      vertex.label.color = "black", 
      vertex.color = "gray",
