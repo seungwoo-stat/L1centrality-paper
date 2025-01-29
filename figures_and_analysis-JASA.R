@@ -206,7 +206,7 @@ c(Gini(L1cent(MCUmovie)),
   Gini(L1cent(MCUmovie, eta = V(MCUmovie)$worldwidegross)), 
   Gini(L1cent(MCUmovie, eta = 1/V(MCUmovie)$worldwidegross))) |> 
   round(4) # heterogeneity indices for three graphs
-
+cor.test(V(MCUmovie)$worldwidegross, L1cent(MCUmovie), alternative = "greater")
 
 ################################################################################
 ## assembly network ############################################################
